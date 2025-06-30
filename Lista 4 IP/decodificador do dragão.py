@@ -57,30 +57,30 @@ def processar_coordenadas(numero_decimal,coordenadas_goku):
 
 # função de esfera mais próxima
 
-def esfera_mais_proxima(coordenada_esfera_x,coordenada_esfera_y,coordenada_goku_x,coordenada_goku_y):
-    distancia_euclidiana=((coordenada_goku_x-coordenada_esfera_x)**2+(coordenada_goku_y-coordenada_esfera_y)**2)**0.5
+def esfera_mais_proxima(coordenadas_esferas_x,coordenadas_esferas_y,coordenada_goku_x,coordenada_goku_y):
+    distancia_euclidiana=((coordenada_goku_x-coordenadas_esferas_x)**2+(coordenada_goku_y-coordenadas_esferas_y)**2)**0.5
     return distancia_euclidiana
 
 # função para processar a string
 
-def processar_string(expressao):
-    coordenada_esfera_x=[]
-    coordenada_esfera_y=[]
+def processar_string(expressao,coordenadas_esferas_x,coordenadas_esferas_y):
     estado_atual="X"
     array_x=""
+    lista_array_x=[]
     array_y=""
+    lista_array_y=[]
     linhas=expressao.strip().split("\n")
     total_linhas=len(linhas)
     for i in range(total_linhas):
         linha=linhas[i].strip()
-        ultima_linha=(i==total_linhas-1)
     
-        # definição dos estados
+        # definição dos estados e processamento das coordenadas
 
         if linha[0:3]=="---":
             estado_atual="X"
             if array_y!="":
-                coordenada_esfera_y.append(conversor_binario_decimal(array_y))
+                coordenadas_esferas_y.append(processar_coordenadas(conversor_binario_decimal(array_y)))
+                lista_array_y.append(array_y)
                 array_y=""
         elif linha[0] in operadores:
             digito=notacao_polonesa(linha)
@@ -90,13 +90,13 @@ def processar_string(expressao):
                 array_y+=int(digito)
         elif linha[0]==" ":
             estado_atual="Y"
-            coordenada_esfera_x.append(conversor_binario_decimal(array_x))
+            coordenadas_esferas_x.append(processar_coordenadas(conversor_binario_decimal(array_x)))
+            lista_array_x.append(array_x)
             array_x=""
+        elif linha=="Todos os bits foram decodificados":
+            return coordenadas_esferas_x,coordenadas_esferas_y,lista_array_x,lista_array_y
+
         
-
-
-
-
 
 # programa principal
 
@@ -117,5 +117,15 @@ linha_vazia=input()
 # input das expressões
 
 expressao=""
-while expressao!="Todos os bits foram decodificados!":
-    expressao=input()
+coordenadas_esferas_x=[]
+coordenadas_esferas_y=[]
+n_esfera=0
+expressao=input()
+coordenadas_esferas_x,coordenadas_esferas_y,lista_array_x,lista_array_y=processar_string(expressao,coordenadas_esferas_x,coordenadas_esferas_y)
+for i in range(len(coordenadas_esferas_x)):
+    n_esfera+=1
+    print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i]})")
+    print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i]})")
+    print(f"As coordenadas da {n_esfera}ª esfera do dragão são: ({coordenadas_esferas_x[i]}, {coordenadas_esferas_y[i]})")
+    print("-"*74)
+print()
