@@ -12,10 +12,10 @@ def primo(numero):
 
 # função da notação polonesa pura
 
+operadores=['+','-','*','/']
 def notacao_polonesa(expressao):
 
     pilha=[]
-    operadores=['+','-','*','/']
     elementos=expressao.split()
 
     # Iterar sobre os elementos da direita para a esquerda
@@ -61,4 +61,61 @@ def esfera_mais_proxima(coordenada_esfera_x,coordenada_esfera_y,coordenada_goku_
     distancia_euclidiana=((coordenada_goku_x-coordenada_esfera_x)**2+(coordenada_goku_y-coordenada_esfera_y)**2)**0.5
     return distancia_euclidiana
 
+# função para processar a string
+
+def processar_string(expressao):
+    coordenada_esfera_x=[]
+    coordenada_esfera_y=[]
+    estado_atual="X"
+    array_x=""
+    array_y=""
+    linhas=expressao.strip().split("\n")
+    total_linhas=len(linhas)
+    for i in range(total_linhas):
+        linha=linhas[i].strip()
+        ultima_linha=(i==total_linhas-1)
+    
+        # definição dos estados
+
+        if linha[0:3]=="---":
+            estado_atual="X"
+            if array_y!="":
+                coordenada_esfera_y.append(conversor_binario_decimal(array_y))
+                array_y=""
+        elif linha[0] in operadores:
+            digito=notacao_polonesa(linha)
+            if estado_atual=="X":
+                array_x+=int(digito)
+            elif estado_atual=="Y":
+                array_y+=int(digito)
+        elif linha[0]==" ":
+            estado_atual="Y"
+            coordenada_esfera_x.append(conversor_binario_decimal(array_x))
+            array_x=""
+        
+
+
+
+
+
 # programa principal
+
+print("🟠 Vamos conquistar as esferas do dragão! 🟠")
+print("-"*74)
+print()
+
+# input da ordem quadrada da matriz e da coordenada do Goku
+
+n=int(input())
+coordenadas_goku=input()
+coordenada_goku_x,coordenada_goku_y=coordenadas_goku.split()
+
+# input da linha vazia
+
+linha_vazia=input()
+
+# input das expressões
+
+expressao=""
+while expressao!="Todos os bits foram decodificados!":
+    expressao=input()
