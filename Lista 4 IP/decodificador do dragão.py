@@ -34,9 +34,11 @@ def notacao_polonesa(expressao):
             elif elemento=='*':
                 resultado=int(op1)*int(op2)
             elif elemento=='/':
-                resultado=int(op2)//int(op1)
-
-            pilha.append(resultado)
+                if op1==0 or op2==0:
+                    resultado=0
+                else:
+                    resultado=int(op2)//int(op1)
+            pilha.append(resultado) 
     
     if primo(pilha[0]):
         return 1
@@ -61,43 +63,6 @@ def distancia_esfera(coordenadas_esferas_x,coordenadas_esferas_y,coordenada_goku
     distancia_euclidiana=((coordenada_goku_x-coordenadas_esferas_x)**2+(coordenada_goku_y-coordenadas_esferas_y)**2)**0.5
     return distancia_euclidiana
 
-# função para processar a string
-
-def processar_string(expressao,coordenadas_esferas_x,coordenadas_esferas_y):
-    estado_atual="X"
-    array_x=""
-    lista_array_x=[]
-    array_y=""
-    lista_array_y=[]
-    linhas=expressao.strip().split("\n")
-    total_linhas=len(linhas)
-    for i in range(total_linhas):
-        linha=linhas[i].strip()
-    
-        # definição dos estados e processamento das coordenadas
-
-        if linha[0:3]=="---":
-            estado_atual="X"
-            if array_y!="":
-                coordenadas_esferas_y.append(processar_coordenadas(conversor_binario_decimal(array_y),N))
-                lista_array_y.append(array_y)
-                array_y=""
-        elif linha[0] in operadores:
-            digito=notacao_polonesa(linha)
-            if estado_atual=="X":
-                array_x+=int(digito)
-            elif estado_atual=="Y":
-                array_y+=int(digito)
-        elif linha[0]==" ":
-            estado_atual="Y"
-            coordenadas_esferas_x.append(processar_coordenadas(conversor_binario_decimal(array_x),N))
-            lista_array_x.append(array_x)
-            array_x=""
-        elif linha=="Todos os bits foram decodificados":
-            return coordenadas_esferas_x,coordenadas_esferas_y,lista_array_x,lista_array_y
-
-        
-
 # programa principal
 
 print("🟠 Vamos conquistar as esferas do dragão! 🟠")
@@ -109,7 +74,7 @@ print()
 N=int(input())
 coordenadas_goku=input()
 coordenadas_goku_str=coordenadas_goku.strip("()")
-coordenada_goku_x,coordenada_goku_y=coordenadas_goku.split(", ")
+coordenada_goku_x,coordenada_goku_y=coordenadas_goku_str.split(", ")
 
 # input da linha vazia
 
@@ -119,37 +84,47 @@ linha_vazia=input()
 
 coordenadas_esferas_x=[]
 coordenadas_esferas_y=[]
+
 lista_array_x=[]
 lista_array_y=[]
+
 n_esfera=0
+
 expressao=""
 estado_atual=""
+
 array_x=""
 array_y=""
+
+
 while expressao!="Todos os bits foram decodificados":
     expressao=input()
     if expressao[0:3]=="---":
         estado_atual="X"
-        if array_y!="":
-            coordenadas_esferas_y.append(processar_coordenadas(conversor_binario_decimal(array_y),N))
-            lista_array_y.append(array_y)
-            array_y=""
+    elif expressao=='':
+        if estado_atual=="X": 
+            estado_atual="Y"
+            coordenadas_esferas_x.append(processar_coordenadas(conversor_binario_decimal(array_x),N))
+            lista_array_x.append(array_x)
+            array_x=""
+        if estado_atual=="Y":
+            if array_y!="":
+                coordenadas_esferas_y.append(processar_coordenadas(conversor_binario_decimal(array_y),N))
+                lista_array_y.append(array_y)
+                array_y=""
     elif expressao[0] in operadores:
         digito=notacao_polonesa(expressao)
         if estado_atual=="X":
-            array_x+=int(digito)
+            array_x+=str(digito)
         elif estado_atual=="Y":
-            array_y+=int(digito)
-    elif expressao[0]==" ":
-        estado_atual="Y"
-        coordenadas_esferas_x.append(processar_coordenadas(conversor_binario_decimal(array_x),N))
-        lista_array_x.append(array_x)
-        array_x=""
+            array_y+=str(digito)
+
+
 for i in range(len(coordenadas_esferas_x)):
     n_esfera+=1
     print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i]})")
     print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i]})")
-    print(f"As coordenadas da {n_esfera}ª esfera do dragão são: ({coordenadas_esferas_x[i]}, {coordenadas_esferas_y[i]})")
+    print(f"As coordenadas da {n_esfera}ª esfera do dragão são: ({coordenadas_esferas_x[i]}, {coordenadas_esferas_y[i]})\n")
 print("-"*74)
 print()
 
@@ -159,7 +134,7 @@ terreno=[["." for _ in range(N)] for _ in range(N)]
 
 terreno[int(coordenada_goku_x)][int(coordenada_goku_y)]="G"
 
-for i in n_esfera:
+for i in range(n_esfera):
     terreno[coordenadas_esferas_x[i]][coordenadas_esferas_y[i]]="☆"
 
 for i in range(N):
@@ -181,7 +156,6 @@ while n_esfera>0:
         coordenadas_esferas_x.pop(indice_menor)
         coordenadas_esferas_y.pop(indice_menor)
         distancias.pop(indice_menor)
-        n_esfera-=1
 
 print(f"Trajetória completa de Goku: {trajeto}")
 print("Missão cumprida! Conseguimos todas as esferas do dragão!🟠🐉")
