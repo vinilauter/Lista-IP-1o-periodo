@@ -30,14 +30,14 @@ def notacao_polonesa(expressao):
             if elemento=='+':
                 resultado=int(op1)+int(op2)
             elif elemento=='-':
-                resultado=int(op2)-int(op1)
+                resultado=int(op1)-int(op2)
             elif elemento=='*':
                 resultado=int(op1)*int(op2)
             elif elemento=='/':
                 if op1==0 or op2==0:
                     resultado=0
                 else:
-                    resultado=int(op2)//int(op1)
+                    resultado=int(op1)//int(op2)
             pilha.append(resultado) 
     
     if primo(pilha[0]):
@@ -122,8 +122,8 @@ while expressao!="Todos os bits foram decodificados":
 
 for i in range(len(coordenadas_esferas_x)):
     n_esfera+=1
-    print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i]})")
-    print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i]})")
+    print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i].strip("()")})")
+    print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i].strip("()")})")
     print(f"As coordenadas da {n_esfera}ª esfera do dragão são: ({coordenadas_esferas_x[i]}, {coordenadas_esferas_y[i]})\n")
 print("-"*74)
 print()
@@ -147,15 +147,16 @@ for i in range(N):
 distancias=[]
 trajeto=f"({coordenada_goku_x},{coordenada_goku_y})"
 while n_esfera>0:
-    for i in range(n_esfera):
+    for i in range(len(coordenadas_esferas_x)):
         distancias.append(distancia_esfera(coordenadas_esferas_x[i],coordenadas_esferas_y[i],int(coordenada_goku_x),int(coordenada_goku_y)))
-        indice_menor=distancias.index(min(distancias))
-        trajeto+=f" -> ({coordenadas_esferas_x[indice_menor]},{coordenadas_esferas_y[indice_menor]})"
-        coordenada_goku_x=coordenadas_esferas_x[indice_menor]
-        coordenada_goku_y=coordenadas_esferas_y[indice_menor]
-        coordenadas_esferas_x.pop(indice_menor)
-        coordenadas_esferas_y.pop(indice_menor)
-        distancias.pop(indice_menor)
+    indice_menor=distancias.index(min(distancias))
+    trajeto+=f" -> ({coordenadas_esferas_x[indice_menor]},{coordenadas_esferas_y[indice_menor]})"
+    coordenada_goku_x=coordenadas_esferas_x[indice_menor]
+    coordenada_goku_y=coordenadas_esferas_y[indice_menor]
+    coordenadas_esferas_x.pop(indice_menor)
+    coordenadas_esferas_y.pop(indice_menor)
+    distancias.pop(indice_menor)
+    n_esfera-=1
 
 print(f"Trajetória completa de Goku: {trajeto}")
 print("Missão cumprida! Conseguimos todas as esferas do dragão!🟠🐉")
