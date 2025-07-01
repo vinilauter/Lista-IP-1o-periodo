@@ -122,8 +122,8 @@ while expressao!="Todos os bits foram decodificados":
 
 for i in range(len(coordenadas_esferas_x)):
     n_esfera+=1
-    print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i].strip("()")})")
-    print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i].strip("()")})")
+    print(f"Coordenada x da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_x[i]}: {coordenadas_esferas_x[i]}")
+    print(f"Coordenada y da {n_esfera}ª esfera do dragão obtida pelo código binário {lista_array_y[i]}: {coordenadas_esferas_y[i]}")
     print(f"As coordenadas da {n_esfera}ª esfera do dragão são: ({coordenadas_esferas_x[i]}, {coordenadas_esferas_y[i]})\n")
 print("-"*74)
 print()
@@ -145,12 +145,12 @@ for i in range(N):
 # análise e print do caminho percorrido
 
 distancias=[]
-trajeto=f"({coordenada_goku_x},{coordenada_goku_y})"
+trajeto=f"({coordenada_goku_x}, {coordenada_goku_y})"
 while n_esfera>0:
     for i in range(len(coordenadas_esferas_x)):
         distancias.append(distancia_esfera(coordenadas_esferas_x[i],coordenadas_esferas_y[i],int(coordenada_goku_x),int(coordenada_goku_y)))
     indice_menor=distancias.index(min(distancias))
-    trajeto+=f" -> ({coordenadas_esferas_x[indice_menor]},{coordenadas_esferas_y[indice_menor]})"
+    trajeto+=f" -> ({coordenadas_esferas_x[indice_menor]}, {coordenadas_esferas_y[indice_menor]})"
     coordenada_goku_x=coordenadas_esferas_x[indice_menor]
     coordenada_goku_y=coordenadas_esferas_y[indice_menor]
     coordenadas_esferas_x.pop(indice_menor)
@@ -158,7 +158,7 @@ while n_esfera>0:
     distancias.pop(indice_menor)
     n_esfera-=1
 
-print(f"Trajetória completa de Goku: {trajeto}")
+print(f"\nTrajetória completa de Goku: {trajeto}")
 print("Missão cumprida! Conseguimos todas as esferas do dragão!🟠🐉")
 
 
