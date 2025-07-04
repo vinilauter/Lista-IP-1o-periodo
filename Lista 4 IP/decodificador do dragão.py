@@ -138,9 +138,7 @@ for i in range(n_esfera):
     terreno[coordenadas_esferas_x[i]][coordenadas_esferas_y[i]]="☆"
 
 for i in range(N):
-    for j in range(N):
-        print(terreno[i][j],end=" ")
-    print()
+    print(' '.join(terreno[i]))
 
 # análise e print do caminho percorrido
 
@@ -156,6 +154,7 @@ while n_esfera>0:
     coordenadas_esferas_x.pop(indice_menor)
     coordenadas_esferas_y.pop(indice_menor)
     distancias.pop(indice_menor)
+    distancias=[]
     n_esfera-=1
 
 print(f"\nTrajetória completa de Goku: {trajeto}")
