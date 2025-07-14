@@ -11,7 +11,7 @@ def batalha(vitalidade_lobo,postura_lobo,cabacas_lobo,vitalidade_genichiro,postu
 
     print(f"--- Turno {turno} ---")
 
-        #inputs das ações
+    #inputs das ações
 
     acao_genichiro=input()
     if acao_genichiro not in golpes_genichiro:
@@ -25,7 +25,7 @@ def batalha(vitalidade_lobo,postura_lobo,cabacas_lobo,vitalidade_genichiro,postu
             print("O lobo não adquiriu esse movimento ainda.")
             acao_lobo=input()
         
-        #resultados da ações
+    #resultados da ações
 
     if acao_genichiro=="ataque":
         if acao_lobo=="ataque":
@@ -67,7 +67,7 @@ def batalha(vitalidade_lobo,postura_lobo,cabacas_lobo,vitalidade_genichiro,postu
             cabacas_lobo-=1
         elif acao_lobo=="usar cabaça" and cabacas_lobo==0:
             print("Sekiro busca sua cabaça, mas ela está vazia!\nGenichiro mantém a guarda, enquanto o lobo percebe seu erro.")
-        elif acao_lobo=="desvio":
+        elif acao_lobo=="desviar":
             print("O lobo tenta prever um possível ataque de Genichiro desviando antecipadamente, mas ele não faz nada.")
         elif acao_lobo=="contra ataque mikiri":
             print("O lobo utiliza a técnica de contra-ataque mikiri, mas Genichiro não realizou nenhum movimento de ataque.")
@@ -91,7 +91,7 @@ def batalha(vitalidade_lobo,postura_lobo,cabacas_lobo,vitalidade_genichiro,postu
         elif acao_lobo=="usar cabaça" and cabacas_lobo==0:
             print("Sekiro busca sua cabaça, mas ela está vazia!\nGenichiro aproveita a hesitação do lobo para recuperar sua postura.\nGenichiro consegue recuperar sua postura, cuidado lobo!")
             postura_genichiro=0
-        elif acao_lobo=="desvio":
+        elif acao_lobo=="desviar":
             print("O lobo tenta prever um possível ataque de Genichiro desviando antecipadamente, mas ele não faz nada.\nGenichiro consegue recuperar sua postura, cuidado lobo!")
             postura_genichiro=0
         elif acao_lobo=="contra ataque mikiri":
@@ -101,7 +101,7 @@ def batalha(vitalidade_lobo,postura_lobo,cabacas_lobo,vitalidade_genichiro,postu
         if acao_lobo=="contra ataque mikiri":
             print("O lobo utiliza a técnica de contra ataque mikiri e pisa na arma de Genichiro!")
             postura_genichiro+=25
-        elif acao_lobo=="desvio":
+        elif acao_lobo=="desviar":
             print("O lobo desvia do ataque especial de Genichiro com muita agilidade!")
         elif acao_lobo=="usar cabaça" and cabacas_lobo>0:
             print("O lobo não consegue desviar do ataque especial de Genichiro, foco na batalha lobo!")
