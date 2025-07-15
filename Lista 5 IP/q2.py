@@ -1,46 +1,23 @@
-﻿# função para as batalhas de cada tentativa
-
-def turnos(dps,vida,dps_boss,vida_boss,boss):
-    vida_boss-=dps
-    if vida_boss>0:
-        vida-=dps_boss
-
-    if boss=="Sif, a Grande Loba Cinzenta" and vida_boss<(vida_boss*0,10):
-        dps_boss-=15
-        print("Sif, a Grande Loba Cinzenta está gravemente ferida! Essa é sua chance, acabe com o sofrimento dela!")
-    elif boss=="Gwyn, Lorde das Cinzas" and vida_boss<=(vida_boss*0,5):
-        dps_boss+=10
-
-    if vida>0 and vida_boss>0:
-        turnos(dps,vida,dps_boss,vida_boss)
-    else:
-        if vida<=0:
-            tentativas+=1
-            return False
-        else:
-            return True
-
-# função do combate
+﻿# função do combate
 
 def batalha(dificuldade,boss,vida,dps,tentativas):
     
     # definição de stats do boss a se enfrentar
 
-    if boss=="Sif, a Grande Loba Cinzenta" and dps_boss=="":
+    if boss=="Sif, a Grande Loba Cinzenta":
         vida_boss=3542
         dps_boss=35
         dps_atual_boss=dps_boss
-    elif boss=="Gwyn, Lorde das Cinzas" and dps_boss=="":
+    elif boss=="Gwyn, Lorde das Cinzas":
         vida_boss=4185
         dps_boss=55
         dps_atual_boss=dps_boss
-        chamas=False
+
     # batalha 
 
-    vitoria=False
-    if not vitoria:
-        vitoria=turnos(dps,vida,dps_atual_boss,vida_boss)
-        if not vitoria:
+    if vida>0 and vida_boss>0:
+        vida,vida_boss,tentativas=turnos(dps,vida,dps_atual_boss,vida_boss,boss,tentativas)
+        if vida<=0:
             if dificuldade=="Iniciante":
                 dps_atual=(dps*105)//100
                 dps_atual_boss=dps_boss*0,9
@@ -51,7 +28,7 @@ def batalha(dificuldade,boss,vida,dps,tentativas):
                 dps_atual=dps*1,20
                 dps_atual_boss=dps_boss*0,67
             batalha(dificuldade,boss,vida,tentativas,dps=dps_atual)
-    if vitoria:
+    if vida_boss<=0:
         print(f"Você precisou de {tentativas} tentativas para vencer o(a) {boss}!")
 
         if dificuldade=="Iniciante":
@@ -91,15 +68,35 @@ def batalha(dificuldade,boss,vida,dps,tentativas):
                 print("Mas o ciclo... o ciclo continua.")
         return
         
-        
+# função para os turnos cada tentativa
+
+def turnos(dps,vida,dps_boss,vida_boss,boss,tentativas):
+    vida_boss-=dps
+    if vida_boss>0:
+        vida-=dps_boss
+
+    if boss=="Sif, a Grande Loba Cinzenta" and vida_boss<354:
+        dps_boss-=15
+        print("Sif, a Grande Loba Cinzenta está gravemente ferida! Essa é sua chance, acabe com o sofrimento dela!")
+    elif boss=="Gwyn, Lorde das Cinzas" and vida_boss<=2093:
+        dps_boss+=10
+
+    if vida>0 and vida_boss>0:
+        turnos(dps,vida,dps_boss,vida_boss,tentativas)
+    else:
+        if vida<=0:
+            tentativas+=1
+            return vida,vida_boss,tentativas
+        elif vida_boss<=0:
+            return vida,vida_boss,tentativas      
     
 # programa principal
 
 dificuldade=input()
 forca,vitalidade=input().split()
 boss=input()
-vida=vitalidade*20
-dps=forca*5
+vida=int(vitalidade*20)
+dps=int(forca*5)
 tentativas=1
 
 if boss=="Sif, a Grande Loba Cinzenta":
