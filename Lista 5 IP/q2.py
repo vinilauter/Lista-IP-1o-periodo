@@ -1,34 +1,34 @@
 ﻿# função do combate
 
-def batalha(dificuldade,boss,vida,dps,tentativas):
+def batalha(dificuldade,boss,vida,dps,dps_atual_boss,tentativas,vitalidade,msg):
     
     # definição de stats do boss a se enfrentar
 
     if boss=="Sif, a Grande Loba Cinzenta":
         vida_boss=3542
         dps_boss=35
-        dps_atual_boss=dps_boss
     elif boss=="Gwyn, Lorde das Cinzas":
         vida_boss=4185
         dps_boss=55
-        dps_atual_boss=dps_boss
 
     # batalha 
 
-    if vida>0 and vida_boss>0:
-        vida,vida_boss,tentativas=turnos(dps,vida,dps_atual_boss,vida_boss,boss,tentativas)
-        if vida<=0:
-            if dificuldade=="Iniciante":
-                dps_atual=(dps*105)//100
-                dps_atual_boss=dps_boss*0,9
-            elif dificuldade=="Veterano":
-                dps_atual=dps*1,10
-                dps_atual_boss=dps_boss*0,8
-            elif dificuldade=="Mestre dos Souls":
-                dps_atual=dps*1,20
-                dps_atual_boss=dps_boss*0,67
-            batalha(dificuldade,boss,vida,tentativas,dps=dps_atual)
-    if vida_boss<=0:
+    vida,vida_boss,tentativas,msg=turnos(dps,vida,dps_atual_boss,vida_boss,boss,tentativas,msg)
+
+    if vida<=0:
+        vida=vitalidade*20
+        if dificuldade=="Iniciante":
+            dps_prox_tentativa=int(dps*1.05)
+            dps_prox_tentativa_boss=int(dps_atual_boss*0.9)
+        elif dificuldade=="Veterano":
+            dps_prox_tentativa=int(dps*1.10)
+            dps_prox_tentativa_boss=int(dps_atual_boss*0.8)
+        elif dificuldade=="Mestre dos Souls":
+            dps_prox_tentativa=int(dps*1.20)
+            dps_prox_tentativa_boss=int(dps_atual_boss*0.67)
+        return batalha(dificuldade,boss,vida,dps_prox_tentativa,dps_prox_tentativa_boss,tentativas,vitalidade,msg)
+            
+    elif vida_boss<=0:
         print(f"Você precisou de {tentativas} tentativas para vencer o(a) {boss}!")
 
         if dificuldade=="Iniciante":
@@ -49,7 +49,7 @@ def batalha(dificuldade,boss,vida,dps,tentativas):
             else:
                 print("Mesmo os veteranos sangram em Dark Souls...")
 
-        elif dificuldade=="Mestre dos Souls":
+        elif dificuldade=="Mestre do Souls":
 
             if tentativas==1:
                 print("Inacreditável. Um verdadeiro Mestre do Souls. Está destinado a se tornar o Dark Lord!")
@@ -70,38 +70,46 @@ def batalha(dificuldade,boss,vida,dps,tentativas):
         
 # função para os turnos cada tentativa
 
-def turnos(dps,vida,dps_boss,vida_boss,boss,tentativas):
+def turnos(dps,vida,dps_boss,vida_boss,boss,tentativas,msg):
     vida_boss-=dps
     if vida_boss>0:
         vida-=dps_boss
 
-    if boss=="Sif, a Grande Loba Cinzenta" and vida_boss<354:
+    if boss=="Sif, a Grande Loba Cinzenta" and vida_boss<=354 and not msg:
+        msg=True
         dps_boss-=15
         print("Sif, a Grande Loba Cinzenta está gravemente ferida! Essa é sua chance, acabe com o sofrimento dela!")
-    elif boss=="Gwyn, Lorde das Cinzas" and vida_boss<=2093:
+    elif boss=="Gwyn, Lorde das Cinzas" and vida_boss<=2093 and not msg:
+        msg=True
         dps_boss+=10
 
     if vida>0 and vida_boss>0:
-        turnos(dps,vida,dps_boss,vida_boss,tentativas)
+        return turnos(dps,vida,dps_boss,vida_boss,boss,tentativas,msg)
     else:
         if vida<=0:
             tentativas+=1
-            return vida,vida_boss,tentativas
+            return vida,vida_boss,tentativas,msg
         elif vida_boss<=0:
-            return vida,vida_boss,tentativas      
+            return vida,vida_boss,tentativas,msg
+        
     
 # programa principal
 
 dificuldade=input()
-forca,vitalidade=input().split()
+str_forca,str_vitalidade=input().split()
+forca=int(str_forca)
+vitalidade=int(str_vitalidade)
 boss=input()
 vida=int(vitalidade*20)
 dps=int(forca*5)
 tentativas=1
+msg=False
 
 if boss=="Sif, a Grande Loba Cinzenta":
     print("Venha até mim guardiã do túmulo de Artorias... Vamos acabar logo com isso!")
+    dps_inicial_boss=35
 elif boss=="Gwyn, Lorde das Cinzas":
     print("Enfim estou de frente ao Senhor das Cinzas! Nossa batalha será lendária e ecoará em todos os cantos de Lordran!!!")
+    dps_inicial_boss=55
 
-batalha(dificuldade,boss,vida,dps,tentativas)
+batalha(dificuldade,boss,vida,dps,dps_inicial_boss,tentativas,vitalidade,msg)
