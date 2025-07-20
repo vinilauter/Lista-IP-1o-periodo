@@ -6,10 +6,8 @@ def batalha(dificuldade,boss,vida,dps,dps_atual_boss,tentativas,vitalidade,msg):
 
     if boss=="Sif, a Grande Loba Cinzenta":
         vida_boss=3542
-        dps_boss=35
     elif boss=="Gwyn, Lorde das Cinzas":
         vida_boss=4185
-        dps_boss=55
 
     # batalha 
 
@@ -26,7 +24,10 @@ def batalha(dificuldade,boss,vida,dps,dps_atual_boss,tentativas,vitalidade,msg):
         elif dificuldade=="Mestre dos Souls":
             dps_prox_tentativa=int(dps*1.20)
             dps_prox_tentativa_boss=int(dps_atual_boss*0.67)
-        return batalha(dificuldade,boss,vida,dps_prox_tentativa,dps_prox_tentativa_boss,tentativas,vitalidade,msg)
+        if boss=="Gwyn, Lorde das Cinzas":
+            return batalha(dificuldade, boss, vida, dps_prox_tentativa, dps_prox_tentativa_boss, tentativas, vitalidade, False)
+        else:
+            return batalha(dificuldade, boss, vida, dps_prox_tentativa, dps_prox_tentativa_boss, tentativas, vitalidade, msg)
             
     elif vida_boss<=0:
         print(f"Você precisou de {tentativas} tentativas para vencer o(a) {boss}!")
@@ -101,7 +102,7 @@ forca=int(str_forca)
 vitalidade=int(str_vitalidade)
 boss=input()
 vida=int(vitalidade*20)
-dps=int(forca*5)
+dps_inicial=int(forca*5)
 tentativas=1
 msg=False
 
@@ -112,4 +113,4 @@ elif boss=="Gwyn, Lorde das Cinzas":
     print("Enfim estou de frente ao Senhor das Cinzas! Nossa batalha será lendária e ecoará em todos os cantos de Lordran!!!")
     dps_inicial_boss=55
 
-batalha(dificuldade,boss,vida,dps,dps_inicial_boss,tentativas,vitalidade,msg)
+batalha(dificuldade,boss,vida,dps_inicial,dps_inicial_boss,tentativas,vitalidade,msg)
