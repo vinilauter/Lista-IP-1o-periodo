@@ -16,14 +16,14 @@ def batalha(dificuldade,boss,vida,dps,dps_atual_boss,tentativas,vitalidade,msg):
     if vida<=0:
         vida=vitalidade*20
         if dificuldade=="Iniciante":
-            dps_prox_tentativa=int(dps*1.05)
-            dps_prox_tentativa_boss=int(dps_atual_boss*0.9)
+            dps_prox_tentativa=dps*1.05
+            dps_prox_tentativa_boss=dps_atual_boss*0.9
         elif dificuldade=="Veterano":
-            dps_prox_tentativa=int(dps*1.10)
-            dps_prox_tentativa_boss=int(dps_atual_boss*0.8)
+            dps_prox_tentativa=dps*1.10
+            dps_prox_tentativa_boss=dps_atual_boss*0.8
         elif dificuldade=="Mestre dos Souls":
-            dps_prox_tentativa=int(dps*1.20)
-            dps_prox_tentativa_boss=int(dps_atual_boss*0.67)
+            dps_prox_tentativa=dps*1.20
+            dps_prox_tentativa_boss=dps_atual_boss*0.67
         if boss=="Gwyn, Lorde das Cinzas":
             return batalha(dificuldade, boss, vida, dps_prox_tentativa, dps_prox_tentativa_boss, tentativas, vitalidade, False)
         else:
