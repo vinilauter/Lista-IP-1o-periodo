@@ -27,6 +27,7 @@ while jogador!="FIM":
                     qtd_atletas_prontos+=1
                 else:
                     print(f"{jogador} pode melhorar, Ancelotti pode usá-lo no segundo tempo.")
+
             else:
 
                 if dados_jogadores[jogador]["desempenho"]>=20:
@@ -46,6 +47,7 @@ while jogador!="FIM":
                     qtd_atletas_prontos+=1
                 else:
                     qtd_mei_def_prontos+=1
+
             else:
                 print(f"Ancelotti precisa analisar o desempenho do {jogador} na partida.")
 
@@ -54,7 +56,8 @@ while jogador!="FIM":
             dados_jogadores[jogador]["desempenho"]=int(input())
 
             if dados_jogadores[jogador]["desempenho"]>70:
-                print(f"Ancelotti deve colocar {jogador} no primeiro tempo.")
+                print(f"Ancelotti deve colocar {jogador} para treinar mais.")
+                
             else:
                 print(f"{jogador} não deveria estar na próxima convocação.")
 
