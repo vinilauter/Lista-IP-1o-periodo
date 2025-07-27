@@ -36,6 +36,112 @@ def calculo_pontuacao(jogador):
             gol_sofrido=True
     return pontos,gol_sofrido,posicao,nome
 
+# função para recepção do time titular
+
+def titulares(pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista):
+
+    gol_sofrido=False
+
+    for i in range(11):
+        jogador=input()
+        pontos,gol_sofrido,posicao,nome=calculo_pontuacao(jogador,gol_sofrido)
+        if posicao=="goleiro":
+            pontos_goleiros.append(pontos)
+            goleiros_lista.append(nome)
+            pontos_time+=pontos
+        elif posicao=="zagueiro":
+            pontos_zagueiros.append(pontos)
+            zagueiros_lista.append(nome)
+            pontos_time+=pontos
+        elif posicao=="lateral":
+            pontos_laterais.append(pontos)
+            laterais_lista.append(nome)
+            pontos_time+=pontos
+        elif posicao=="meia":
+            pontos_meias.append(pontos)
+            meias_lista.append(nome)
+            pontos_time+=pontos 
+        elif posicao=="atacante":
+            pontos_atacantes.append(pontos)
+            atacantes_lista.append(nome)
+            pontos_time+=pontos
+    
+    return pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista
+
+# função para recepção do time reserva
+
+def reservas(pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas):
+
+    gol_sofrido=False
+
+    for i in range(5):
+        jogador=input()
+        pontos,gol_sofrido,posicao=calculo_pontuacao(jogador,gol_sofrido)
+        if posicao=="goleiro":
+            pontos_goleiros_reservas.append(pontos)
+            goleiros_lista_reservas.append(jogador)
+        elif posicao=="zagueiro":
+            pontos_zagueiros_reservas.append(pontos)
+            zagueiros_lista_reservas.append(jogador)
+        elif posicao=="lateral":
+            pontos_laterais_reservas.append(pontos)
+            laterais_lista_reservas.append(jogador)
+        elif posicao=="meia":
+            pontos_meias_reservas.append(pontos)
+            meias_lista_reservas.append(jogador)
+        elif posicao=="atacante":
+            pontos_atacantes_reservas.append(pontos)
+            atacantes_lista_reservas.append(jogador)
+        
+    return pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas
+
+# função da substituição inteligente
+
+def sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista):
+
+    for i in range(5):
+        # pontuações hipotéticas se houver substituição
+        if i==0:
+            indice_minimo_goleiros=pontos_goleiros.index(min(pontos_goleiros))
+            if min(pontos_goleiros)<pontos_goleiros_reservas[0]:
+                pontos_time_copia_goleiro=pontos_time
+                pontos_time_copia_goleiro=pontos_time_copia_goleiro-pontos_goleiros[indice_minimo_goleiros]+pontos_goleiros_reservas[0]
+        elif i==1:
+            indice_minimo_zagueiros=pontos_zagueiros.index(min(pontos_zagueiros))
+            if min(pontos_zagueiros)<pontos_zagueiros_reservas[0]:
+                pontos_time_copia_zagueiro=pontos_time
+                pontos_time_copia_zagueiro=pontos_time_copia_zagueiro-pontos_zagueiros[indice_minimo_zagueiros]+pontos_zagueiros_reservas[0]
+        elif i==2:
+            indice_minimo_laterais=pontos_laterais.index(min(pontos_laterais))
+            if min(pontos_laterais)<pontos_laterais_reservas[0]:
+                pontos_time_copia_lateral=pontos_time
+                pontos_time_copia_lateral=pontos_time_copia_lateral-pontos_laterais[indice_minimo_laterais]+pontos_laterais_reservas[0]
+        elif i==3:
+            indice_minimo_meias=pontos_meias.index(min(pontos_meias))
+            if min(pontos_meias)<pontos_meias_reservas[0]:
+                pontos_time_copia_meia=pontos_time
+                pontos_time_copia_meia=pontos_time_copia_meia-pontos_meias[indice_minimo_meias]+pontos_meias_reservas[0]
+        elif i==4:
+            indice_minimo_atacantes=pontos_atacantes.index(min(pontos_atacantes))
+            if min(pontos_atacantes)<pontos_atacantes_reservas[0]:
+                pontos_time_copia_atacante=pontos_time
+                pontos_time_copia_atacante=pontos_time_copia_atacante-pontos_atacantes[indice_minimo_atacantes]+pontos_atacantes_reservas[0]
+
+            # pontuação máxima com substituição
+        maximo_pontos=max(pontos_time_copia_goleiro,pontos_time_copia_zagueiro,pontos_time_copia_lateral,pontos_time_copia_meia,pontos_time_copia_atacante)
+        if maximo_pontos!=pontos_time:
+            pontos_time=maximo_pontos
+            if pontos_time_copia_goleiro==maximo_pontos:
+                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {goleiros_lista[indice_minimo_goleiros]} por {goleiros_lista_reservas[0]} fez ele ganhar pontos!")
+            elif pontos_time_copia_zagueiro==maximo_pontos:
+                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {zagueiros_lista[indice_minimo_zagueiros]} por {zagueiros_lista_reservas[0]} fez ele ganhar pontos!")
+            elif pontos_time_copia_lateral==maximo_pontos:
+                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {laterais_lista[indice_minimo_laterais]} por {laterais_lista_reservas[0]} fez ele ganhar pontos!")
+            elif pontos_time_copia_meia==maximo_pontos:
+                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {meias_lista[indice_minimo_meias]} por {meias_lista_reservas[0]} fez ele ganhar pontos!")
+            elif pontos_time_copia_atacante==maximo_pontos:
+                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {atacantes_lista[indice_minimo_atacantes]} por {atacantes_lista_reservas[0]} fez ele ganhar pontos!")
+
 # programa principal
 
 # recepção dos técnicos 
@@ -48,7 +154,11 @@ for i in range(n_tecnicos):
     nome_tecnico=input()
     escalacao=input()
 
-    # listas e dicionários para cada posição
+    # flag para titulares
+
+    titulares=False
+
+    # listas para titulares
 
     pontos_goleiros=[]
     pontos_zagueiros=[]
@@ -62,6 +172,20 @@ for i in range(n_tecnicos):
     meias_lista=[]
     atacantes_lista=[]
 
+    # listas para reservas
+
+    pontos_goleiros_reservas=[]
+    pontos_zagueiros_reservas=[]
+    pontos_laterais_reservas=[]
+    pontos_meias_reservas=[]
+    pontos_atacantes_reservas=[]
+
+    goleiros_lista_reservas=[]
+    zagueiros_lista_reservas=[]
+    laterais_lista_reservas=[]
+    meias_lista_reservas=[]
+    atacantes_lista_reservas=[]
+
     # pontos totais do time
 
     pontos_time=0
@@ -70,81 +194,17 @@ for i in range(n_tecnicos):
      
     if escalacao=="titulares":
 
-        for i in range(11):
-            jogador=input()
-            gol_sofrido=False
-            pontos,gol_sofrido,posicao,nome=calculo_pontuacao(jogador,gol_sofrido)
-            if posicao=="goleiro":
-                pontos_goleiros.append(pontos)
-                goleiros_lista.append(nome)
-                pontos_time+=pontos
-            elif posicao=="zagueiro":
-                pontos_zagueiros.append(pontos)
-                pontos_time+=pontos
-            elif posicao=="lateral":
-                pontos_laterais.append(pontos)
-                laterais_lista.append(nome)
-                pontos_time+=pontos
-            elif posicao=="meia":
-                pontos_meias.append(pontos)
-                meias_lista.append(nome)
-                pontos_time+=pontos 
-            elif posicao=="atacante":
-                pontos_atacantes.append(pontos)
-                atacantes_lista.append(nome)
-                pontos_time+=pontos
+        titulares=True
+        pontos_time,pontos_goleiros,pontos_zagueiros,pontos_meias,pontos_laterais,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista=titulares(pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista)
 
         # agora os reservas
+    elif escalacao=="reservas":
 
-        escalacao=input()
-        for i in range(5):
-            jogador=input()
-            pontos,gol_sofrido,posicao=calculo_pontuacao(jogador,gol_sofrido)
-            # pontuações hipotéticas se houver substituição
-            if posicao=="goleiro":
-                indice_minimo_goleiros=pontos_goleiros.index(min(pontos_goleiros))
-                if min(pontos_goleiros)<pontos:
-                    pontos_time_copia_goleiro=pontos_time
-                    pontos_time_copia_goleiro=pontos_time_copia_goleiro-pontos_goleiros[indice_minimo_goleiros]+pontos
-                    nome_goleiro=nome
-            elif posicao=="zagueiro":
-                indice_minimo_zagueiros=pontos_zagueiros.index(min(pontos_zagueiros))
-                if min(pontos_zagueiros)<pontos:
-                    pontos_time_copia_zagueiro=pontos_time
-                    pontos_time_copia_zagueiro=pontos_time_copia_zagueiro-pontos_zagueiros[indice_minimo_zagueiros]+pontos
-                    nome_zagueiro=nome
-            elif posicao=="lateral":
-                indice_minimo_laterais=pontos_laterais.index(min(pontos_laterais))
-                if min(pontos_laterais)<pontos:
-                    pontos_time_copia_lateral=pontos_time
-                    pontos_time_copia_lateral=pontos_time_copia_lateral-pontos_laterais[indice_minimo_laterais]+pontos
-                    nome_lateral=nome
-            elif posicao=="meia":
-                indice_minimo_meias=pontos_meias.index(min(pontos_meias))
-                if min(pontos_meias)<pontos:
-                    pontos_time_copia_meia=pontos_time
-                    pontos_time_copia_meia=pontos_time_copia_meia-pontos_meias[indice_minimo_meias]+pontos
-                    nome_meia=nome
-            elif posicao=="atacante":
-                indice_minimo_atacantes=pontos_atacantes.index(min(pontos_atacantes))
-                if min(pontos_atacantes)<pontos:
-                    pontos_time_copia_atacante=pontos_time
-                    pontos_time_copia_atacante=pontos_time_copia_atacante-pontos_atacantes[indice_minimo_atacantes]+pontos
-                    nome_atacante=nome
-            # pontuação máxima com substituição
-            maximo_pontos=max(pontos_time_copia_goleiro,pontos_time_copia_zagueiro,pontos_time_copia_lateral,pontos_time_copia_meia,pontos_time_copia_atacante)
-        if maximo_pontos!=pontos_time:
-            pontos_time=maximo_pontos
-            if pontos_time_copia_goleiro==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {goleiros_lista[indice_minimo_goleiros]} por {nome_goleiro} fez ele ganhar pontos!")
-            elif pontos_time_copia_zagueiro==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {zagueiros_lista[indice_minimo_zagueiros]} por {nome_zagueiro} fez ele ganhar pontos!")
-            elif pontos_time_copia_lateral==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {laterais_lista[indice_minimo_laterais]} por {nome_lateral} fez ele ganhar pontos!")
-            elif pontos_time_copia_meia==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {meias_lista[indice_minimo_meias]} por {nome_meia} fez ele ganhar pontos!")
-            elif pontos_time_copia_atacante==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {atacantes_lista[indice_minimo_atacantes]} por {nome_atacante} fez ele ganhar pontos!")
+        pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas=reservas(pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas)
+        
+        if not titulares:
+            escalacao=input()
+        
             
 
                         
