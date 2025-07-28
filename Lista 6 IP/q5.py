@@ -92,7 +92,6 @@ def substituicao_inteligente(pontos_time,titulares,reservas):
             info_troca=(ganho,prioridade_posicao[posicao],pior_titular_nome,reserva_nome)
             possiveis_trocas.append(info_troca)
 
-    # se não houver trocas vantajosas, retorna os dados originais
     if not possiveis_trocas:
         return pontos_time,False,"",""
 
@@ -108,17 +107,16 @@ def substituicao_inteligente(pontos_time,titulares,reservas):
     
     return pontos_time_final,True,titular_sai,reserva_entra
 
-def obter_pontuacao(item_tecnico):
-    return item_tecnico[1][0]
+def obter_pontuacao(resultado_tecnico):
+    return resultado_tecnico[1]
 
-# programa principal
+
 n_tecnicos=int(input())
-tecnicos_info={}
-nomes_dos_tecnicos=[]
+# lista para guardar todos os resultados antes de imprimir
+resultados_gerais=[]
 
 for i in range(n_tecnicos):
     nome_tecnico=input()
-    nomes_dos_tecnicos.append(nome_tecnico)
 
     comando1=input()
     if comando1=="titulares":
@@ -132,22 +130,33 @@ for i in range(n_tecnicos):
 
     pontos_finais,fez_sub,titular_removido,reserva_adicionado=substituicao_inteligente(pontos_time,titulares_info,reservas_info)
     
-    tecnicos_info[nome_tecnico]=(pontos_finais,fez_sub)
+    # guarda todas as informações necessárias para a impressão posterior
+    info_completa=(nome_tecnico,pontos_finais,fez_sub,titular_removido,reserva_adicionado)
+    resultados_gerais.append(info_completa)
+
+# imprime a lista de todos os técnicos participantes
+nomes_dos_tecnicos=[resultado[0] for resultado in resultados_gerais]
+print(f"Os técnicos que participarão da avaliação da rodada serão {', '.join(nomes_dos_tecnicos)}.")
+
+# imprime a mensagem de substituição para cada técnico
+for resultado in resultados_gerais:
+    nome_tecnico=resultado[0]
+    fez_sub=resultado[2]
+    titular_removido=resultado[3]
+    reserva_adicionado=resultado[4]
 
     if fez_sub:
         print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {titular_removido} por {reserva_adicionado} fez ele ganhar pontos!")
     else:
         print(f"Pode cortar {nome_tecnico} dos candidatos a técnico da amarelinha, nem fazer uma substituição ele consegue...")
 
-# imprime a lista de todos os técnicos participantes
-print(f"Os técnicos que participarão da avaliação da rodada serão {', '.join(nomes_dos_tecnicos)}.")
-
 # ordena os técnicos pela pontuação para encontrar o vencedor
-tecnicos_ordenados=sorted(tecnicos_info.items(),key=obter_pontuacao,reverse=True)
+resultados_ordenados=sorted(resultados_gerais,key=obter_pontuacao,reverse=True)
 
-vencedor_nome=tecnicos_ordenados[0][0]
-vencedor_pontos=tecnicos_ordenados[0][1][0]
-vencedor_fez_sub=tecnicos_ordenados[0][1][1]
+vencedor_info=resultados_ordenados[0]
+vencedor_nome=vencedor_info[0]
+vencedor_pontos=vencedor_info[1]
+vencedor_fez_sub=vencedor_info[2]
 
 # imprime a mensagem do vencedor
 print(f"{vencedor_nome} é incrível ganhou essa rodada com {vencedor_pontos} pontos!")
