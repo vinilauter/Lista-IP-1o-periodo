@@ -42,7 +42,7 @@ def titulares(pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,ponto
 
     gol_sofrido=False
 
-    for i in range(11):
+    for i in range(12):
         jogador=input()
         pontos,gol_sofrido,posicao,nome=calculo_pontuacao(jogador,gol_sofrido)
         if posicao=="goleiro":
@@ -97,7 +97,7 @@ def reservas(pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_
 
 # função da substituição inteligente
 
-def sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista):
+def sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista,substituicao):
 
     for i in range(5):
         # pontuações hipotéticas se houver substituição
@@ -141,12 +141,24 @@ def sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reserv
                 print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {meias_lista[indice_minimo_meias]} por {meias_lista_reservas[0]} fez ele ganhar pontos!")
             elif pontos_time_copia_atacante==maximo_pontos:
                 print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {atacantes_lista[indice_minimo_atacantes]} por {atacantes_lista_reservas[0]} fez ele ganhar pontos!")
+            substituicao[nome_tecnico]=True
+
+        else:
+            print(f"Pode cortar {nome_tecnico} dos candidatos a técnico da amarelinha, nem fazer uma substituição ele consegue...")
+            substituicao[nome_tecnico]=False
+        return pontos_time,substituicao
+
+# função para substituir lambda
+def obter_pontuacao(item_tecnico):
+    return item_tecnico[1]
 
 # programa principal
 
 # recepção dos técnicos 
 
 n_tecnicos=int(input())
+tecnicos={}
+substituicao={}
 
 for i in range(n_tecnicos):
     # input do técnico
@@ -204,7 +216,16 @@ for i in range(n_tecnicos):
         
         if not titulares:
             escalacao=input()
-        
-            
+    
+    # substituição inteligente
 
-                        
+    pontos_time,substituicao=sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista)
+
+    tecnicos[nome_tecnico]=pontos_time
+
+tecnicos_ordenados=sorted(tecnicos.items(),key=obter_pontuacao,reverse=True)
+
+print(f"{tecnicos_ordenados[0][0]} é incrível ganhou essa rodada com {tecnicos_ordenados[0][1]} pontos!")
+
+if not substituicao[tecnicos_ordenados[0][0]]:
+    print(f"Temos que pedir desculpas a {tecnicos_ordenados[0][0]}, mesmo sem fazer uma substituição ele foi o melhor da rodada, talvez ele deva assumir a amarelinha depois do Ancelotti!")
