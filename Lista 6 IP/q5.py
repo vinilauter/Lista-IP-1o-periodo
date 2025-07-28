@@ -1,231 +1,157 @@
-# função para cálculo de pontuação do jogador titular
-
-def calculo_pontuacao(jogador):
+# função para calcular a pontuação de um único jogador
+def calculo_pontuacao(info_jogador):
     pontos=0
+    # separação dos dados do jogador
+    nome,posicao,gols_feitos,assistencias,amarelos,vermelhos,gols_sofridos=info_jogador.split(",")
 
-    # separação dos dados
+    # conversão dos dados para números inteiros
+    gols_feitos=int(gols_feitos)
+    assistencias=int(assistencias)
+    amarelos=int(amarelos)
+    vermelhos=int(vermelhos)
+    gols_sofridos=int(gols_sofridos)
 
-    nome,posicao,gols_feitos,assistencias,amarelos,vermelhos,gols_sofridos=jogador.split(",")
+    # cálculo dos pontos 
+    pontos+=gols_feitos*8
+    pontos+=assistencias*5 
+    pontos-=amarelos*1
+    pontos-=vermelhos*3
 
-    # adição de pontos por gol
-
-    for i in range(int(gols_feitos)):
-        pontos+=8
-
-    # adição de pontos por assistências
-
-    for i in range(int(assistencias)):
-        pontos+=4
-
-    # adição de pontos por cartões amarelos
-
-    for i in range(int(amarelos)):
-        pontos-=1
-
-    # adição de pontos por cartões vermelhos
-
-    for i in range(int(vermelhos)):
-        pontos-=3
-
-    # adição de pontos por clean sheet
-
+    # bônus do clean sheet
     if posicao=="goleiro" or posicao=="lateral" or posicao=="zagueiro":
-        if gols_sofridos=="0":
+        if gols_sofridos==0:
             pontos+=5
-        if gol_sofrido!="0":
-            gol_sofrido=True
-    return pontos,gol_sofrido,posicao,nome
 
-# função para recepção do time titular
+    return pontos,posicao,nome
 
-def titulares(pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista):
-
-    gol_sofrido=False
-
-    for i in range(12):
-        jogador=input()
-        pontos,gol_sofrido,posicao,nome=calculo_pontuacao(jogador,gol_sofrido)
-        if posicao=="goleiro":
-            pontos_goleiros.append(pontos)
-            goleiros_lista.append(nome)
-            pontos_time+=pontos
-        elif posicao=="zagueiro":
-            pontos_zagueiros.append(pontos)
-            zagueiros_lista.append(nome)
-            pontos_time+=pontos
-        elif posicao=="lateral":
-            pontos_laterais.append(pontos)
-            laterais_lista.append(nome)
-            pontos_time+=pontos
-        elif posicao=="meia":
-            pontos_meias.append(pontos)
-            meias_lista.append(nome)
-            pontos_time+=pontos 
-        elif posicao=="atacante":
-            pontos_atacantes.append(pontos)
-            atacantes_lista.append(nome)
-            pontos_time+=pontos
-    
-    return pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista
-
-# função para recepção do time reserva
-
-def reservas(pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas):
-
-    gol_sofrido=False
-
-    for i in range(5):
-        jogador=input()
-        pontos,gol_sofrido,posicao=calculo_pontuacao(jogador,gol_sofrido)
-        if posicao=="goleiro":
-            pontos_goleiros_reservas.append(pontos)
-            goleiros_lista_reservas.append(jogador)
-        elif posicao=="zagueiro":
-            pontos_zagueiros_reservas.append(pontos)
-            zagueiros_lista_reservas.append(jogador)
-        elif posicao=="lateral":
-            pontos_laterais_reservas.append(pontos)
-            laterais_lista_reservas.append(jogador)
-        elif posicao=="meia":
-            pontos_meias_reservas.append(pontos)
-            meias_lista_reservas.append(jogador)
-        elif posicao=="atacante":
-            pontos_atacantes_reservas.append(pontos)
-            atacantes_lista_reservas.append(jogador)
+# função para ler os titulares
+def titulares():
+    jogadores_por_posicao={
+        "goleiro":[],"zagueiro":[],"lateral":[],
+        "meia":[],"atacante":[]
+    }
+    pontos_time=0
+    for i in range(11):
+        info_jogador=input()
+        pontos,posicao,nome=calculo_pontuacao(info_jogador)
         
-    return pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas
+        jogadores_por_posicao[posicao].append((pontos,nome))
+        pontos_time+=pontos
+    
+    return pontos_time,jogadores_por_posicao
+
+# função para ler os reservas
+def reservas():
+    reservas={}
+    for _ in range(5):
+        info_jogador=input()
+        pontos,posicao,nome=calculo_pontuacao(info_jogador)
+        reservas[posicao]=(pontos,nome)
+    return reservas
+
+# função auxiliar para encontrar o pior titular a ser substituído em uma posição
+def encontrar_pior_titular(titulares_posicao):
+    pior_pontuacao=titulares_posicao[0][0]
+    nome_pior_jogador=titulares_posicao[0][1]
+
+    i=1
+    while i<len(titulares_posicao):
+        pontuacao_atual=titulares_posicao[i][0]
+        nome_atual=titulares_posicao[i][1]
+        
+        if pontuacao_atual<pior_pontuacao:
+            pior_pontuacao=pontuacao_atual
+            nome_pior_jogador=nome_atual
+        elif pontuacao_atual==pior_pontuacao:
+            if nome_atual>nome_pior_jogador:
+                nome_pior_jogador=nome_atual
+        i+=1
+        
+    return pior_pontuacao,nome_pior_jogador
+
+def obter_chave_troca(item):
+    return (item[0],-item[1])
 
 # função da substituição inteligente
+def substituicao_inteligente(pontos_time,titulares,reservas):
+    # definição da prioridade de substituição
+    prioridade_posicao={"goleiro":1,"lateral":2,"zagueiro":3,"meia":4,"atacante":5}
+    
+    possiveis_trocas=[]
 
-def sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista,substituicao):
+    for posicao in reservas:
+        reserva_pontos,reserva_nome=reservas[posicao]
+        
+        titulares_posicao=titulares[posicao]
+        
+        pior_titular_pontos,pior_titular_nome=encontrar_pior_titular(titulares_posicao)
 
-    for i in range(5):
-        # pontuações hipotéticas se houver substituição
-        if i==0:
-            indice_minimo_goleiros=pontos_goleiros.index(min(pontos_goleiros))
-            if min(pontos_goleiros)<pontos_goleiros_reservas[0]:
-                pontos_time_copia_goleiro=pontos_time
-                pontos_time_copia_goleiro=pontos_time_copia_goleiro-pontos_goleiros[indice_minimo_goleiros]+pontos_goleiros_reservas[0]
-        elif i==1:
-            indice_minimo_zagueiros=pontos_zagueiros.index(min(pontos_zagueiros))
-            if min(pontos_zagueiros)<pontos_zagueiros_reservas[0]:
-                pontos_time_copia_zagueiro=pontos_time
-                pontos_time_copia_zagueiro=pontos_time_copia_zagueiro-pontos_zagueiros[indice_minimo_zagueiros]+pontos_zagueiros_reservas[0]
-        elif i==2:
-            indice_minimo_laterais=pontos_laterais.index(min(pontos_laterais))
-            if min(pontos_laterais)<pontos_laterais_reservas[0]:
-                pontos_time_copia_lateral=pontos_time
-                pontos_time_copia_lateral=pontos_time_copia_lateral-pontos_laterais[indice_minimo_laterais]+pontos_laterais_reservas[0]
-        elif i==3:
-            indice_minimo_meias=pontos_meias.index(min(pontos_meias))
-            if min(pontos_meias)<pontos_meias_reservas[0]:
-                pontos_time_copia_meia=pontos_time
-                pontos_time_copia_meia=pontos_time_copia_meia-pontos_meias[indice_minimo_meias]+pontos_meias_reservas[0]
-        elif i==4:
-            indice_minimo_atacantes=pontos_atacantes.index(min(pontos_atacantes))
-            if min(pontos_atacantes)<pontos_atacantes_reservas[0]:
-                pontos_time_copia_atacante=pontos_time
-                pontos_time_copia_atacante=pontos_time_copia_atacante-pontos_atacantes[indice_minimo_atacantes]+pontos_atacantes_reservas[0]
+        ganho=reserva_pontos-pior_titular_pontos
 
-            # pontuação máxima com substituição
-        maximo_pontos=max(pontos_time_copia_goleiro,pontos_time_copia_zagueiro,pontos_time_copia_lateral,pontos_time_copia_meia,pontos_time_copia_atacante)
-        if maximo_pontos!=pontos_time:
-            pontos_time=maximo_pontos
-            if pontos_time_copia_goleiro==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {goleiros_lista[indice_minimo_goleiros]} por {goleiros_lista_reservas[0]} fez ele ganhar pontos!")
-            elif pontos_time_copia_zagueiro==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {zagueiros_lista[indice_minimo_zagueiros]} por {zagueiros_lista_reservas[0]} fez ele ganhar pontos!")
-            elif pontos_time_copia_lateral==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {laterais_lista[indice_minimo_laterais]} por {laterais_lista_reservas[0]} fez ele ganhar pontos!")
-            elif pontos_time_copia_meia==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {meias_lista[indice_minimo_meias]} por {meias_lista_reservas[0]} fez ele ganhar pontos!")
-            elif pontos_time_copia_atacante==maximo_pontos:
-                print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {atacantes_lista[indice_minimo_atacantes]} por {atacantes_lista_reservas[0]} fez ele ganhar pontos!")
-            substituicao[nome_tecnico]=True
+        if ganho>0:
+            info_troca=(ganho,prioridade_posicao[posicao],pior_titular_nome,reserva_nome)
+            possiveis_trocas.append(info_troca)
 
-        else:
-            print(f"Pode cortar {nome_tecnico} dos candidatos a técnico da amarelinha, nem fazer uma substituição ele consegue...")
-            substituicao[nome_tecnico]=False
-        return pontos_time,substituicao
+    # se não houver trocas vantajosas, retorna os dados originais
+    if not possiveis_trocas:
+        return pontos_time,False,"",""
 
-# função para substituir lambda
+    # ordena as trocas para encontrar a melhor
+    trocas_ordenadas=sorted(possiveis_trocas,key=obter_chave_troca,reverse=True)
+
+    melhor_troca=trocas_ordenadas[0]
+    ganho_final=melhor_troca[0]
+    titular_sai=melhor_troca[2]
+    reserva_entra=melhor_troca[3]
+
+    pontos_time_final=pontos_time+ganho_final
+    
+    return pontos_time_final,True,titular_sai,reserva_entra
+
 def obter_pontuacao(item_tecnico):
-    return item_tecnico[1]
+    return item_tecnico[1][0]
 
 # programa principal
-
-# recepção dos técnicos 
-
 n_tecnicos=int(input())
-tecnicos={}
-substituicao={}
+tecnicos_info={}
+nomes_dos_tecnicos=[]
 
 for i in range(n_tecnicos):
-    # input do técnico
-
     nome_tecnico=input()
-    escalacao=input()
+    nomes_dos_tecnicos.append(nome_tecnico)
 
-    # flag para titulares
+    comando1=input()
+    if comando1=="titulares":
+        pontos_time,titulares_info=titulares()
+        input() 
+        reservas_info=reservas()
+    else: 
+        reservas_info=reservas()
+        input() 
+        pontos_time,titulares_info=titulares()
 
-    titulares=False
-
-    # listas para titulares
-
-    pontos_goleiros=[]
-    pontos_zagueiros=[]
-    pontos_laterais=[]
-    pontos_meias=[]
-    pontos_atacantes=[]
-
-    goleiros_lista=[]
-    zagueiros_lista=[]
-    laterais_lista=[]
-    meias_lista=[]
-    atacantes_lista=[]
-
-    # listas para reservas
-
-    pontos_goleiros_reservas=[]
-    pontos_zagueiros_reservas=[]
-    pontos_laterais_reservas=[]
-    pontos_meias_reservas=[]
-    pontos_atacantes_reservas=[]
-
-    goleiros_lista_reservas=[]
-    zagueiros_lista_reservas=[]
-    laterais_lista_reservas=[]
-    meias_lista_reservas=[]
-    atacantes_lista_reservas=[]
-
-    # pontos totais do time
-
-    pontos_time=0
-
-    # condicionais para recepção de titulares ou reservas
-     
-    if escalacao=="titulares":
-
-        titulares=True
-        pontos_time,pontos_goleiros,pontos_zagueiros,pontos_meias,pontos_laterais,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista=titulares(pontos_time,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista)
-
-        # agora os reservas
-    elif escalacao=="reservas":
-
-        pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas=reservas(pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas)
-        
-        if not titulares:
-            escalacao=input()
+    pontos_finais,fez_sub,titular_removido,reserva_adicionado=substituicao_inteligente(pontos_time,titulares_info,reservas_info)
     
-    # substituição inteligente
+    tecnicos_info[nome_tecnico]=(pontos_finais,fez_sub)
 
-    pontos_time,substituicao=sub_inteligente(pontos_time,pontos_goleiros_reservas,pontos_zagueiros_reservas,pontos_laterais_reservas,pontos_meias_reservas,pontos_atacantes_reservas,goleiros_lista_reservas,zagueiros_lista_reservas,laterais_lista_reservas,meias_lista_reservas,atacantes_lista_reservas,pontos_goleiros,pontos_zagueiros,pontos_laterais,pontos_meias,pontos_atacantes,goleiros_lista,zagueiros_lista,laterais_lista,meias_lista,atacantes_lista)
+    if fez_sub:
+        print(f"{nome_tecnico} é um gênio da bola mesmo, a substituição de {titular_removido} por {reserva_adicionado} fez ele ganhar pontos!")
+    else:
+        print(f"Pode cortar {nome_tecnico} dos candidatos a técnico da amarelinha, nem fazer uma substituição ele consegue...")
 
-    tecnicos[nome_tecnico]=pontos_time
+# imprime a lista de todos os técnicos participantes
+print(f"Os técnicos que participarão da avaliação da rodada serão {', '.join(nomes_dos_tecnicos)}.")
 
-tecnicos_ordenados=sorted(tecnicos.items(),key=obter_pontuacao,reverse=True)
+# ordena os técnicos pela pontuação para encontrar o vencedor
+tecnicos_ordenados=sorted(tecnicos_info.items(),key=obter_pontuacao,reverse=True)
 
-print(f"{tecnicos_ordenados[0][0]} é incrível ganhou essa rodada com {tecnicos_ordenados[0][1]} pontos!")
+vencedor_nome=tecnicos_ordenados[0][0]
+vencedor_pontos=tecnicos_ordenados[0][1][0]
+vencedor_fez_sub=tecnicos_ordenados[0][1][1]
 
-if not substituicao[tecnicos_ordenados[0][0]]:
-    print(f"Temos que pedir desculpas a {tecnicos_ordenados[0][0]}, mesmo sem fazer uma substituição ele foi o melhor da rodada, talvez ele deva assumir a amarelinha depois do Ancelotti!")
+# imprime a mensagem do vencedor
+print(f"{vencedor_nome} é incrível ganhou essa rodada com {vencedor_pontos} pontos!")
+
+# imprime a mensagem adicional se o vencedor não fez substituição
+if not vencedor_fez_sub:
+    print(f"Temos que pedir desculpas a {vencedor_nome}, mesmo sem fazer uma substituição ele foi o melhor da rodada, talvez ele deva assumir a amarelinha depois do Ancelotti!")
